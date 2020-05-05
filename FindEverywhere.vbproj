@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\FindEverywhere\bin\Win64_Shipping_Client\</OutputPath>
     <DocumentationFile>FindEverywhere.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
@@ -44,7 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.0.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.0.0.10\lib\net472\0Harmony.dll</HintPath>
+      <HintPath>packages\Lib.Harmony.2.0.0.10\lib\net472\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="SandBox">
       <HintPath>F:\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\Modules\SandBox\bin\Win64_Shipping_Client\SandBox.dll</HintPath>
@@ -268,6 +268,8 @@
     <Compile Include="Patches\FiefScreen.vb" />
     <Compile Include="Patches\ItemScreen.vb" />
     <Compile Include="Patches\PartyScreen.vb" />
+    <Compile Include="Util.vb" />
+    <Compile Include="ViewModels\SearchPartyViewModel.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -287,14 +289,20 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ModuleData\GUI\Brushes\Brush_FindEveryWhere.xml" />
+    <Content Include="ModuleData\GUI\Prefabs\Party\View_FindEveryWhere.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ModuleData\Submodule.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ModuleData\GUI\Brushes\" />
-    <Folder Include="ModuleData\GUI\Prefabs\" />
     <Folder Include="ModuleData\GUI\SpriteSheets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y /E /I "$(ProjectDir)ModuleData" "$(TargetDir)..\.."</PostBuildEvent>
+  </PropertyGroup>
 </Project>

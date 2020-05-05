@@ -1,0 +1,16 @@
+﻿<Brushes>
+  <Brush Name="Party.Search.TextBox"
+         Font="FiraSansExtraCondensed-Regular"
+         TextHorizontalAlignment="Center">
+    <Styles>
+      <Style Name="Default"
+			       FontColor="#F9EAD2FF"
+			       TextGlowColor="#000000FF"
+			       TextOutlineColor="#000000FF"
+			       TextOutlineAmount="0"
+			       TextGlowRadius="0"
+			       TextBlur="0"
+			       FontSize="22" />
+    </Styles>
+  </Brush>
+</Brushes>

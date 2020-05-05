@@ -1,4 +1,5 @@
-﻿Imports TaleWorlds.Core
+﻿Imports HarmonyLib
+Imports TaleWorlds.Core
 Imports TaleWorlds.Engine.GauntletUI
 Imports TaleWorlds.MountAndBlade
 
@@ -13,6 +14,8 @@ Namespace Global.FindEverywhere
 
         Protected Overrides Sub OnSubModuleLoad()
             MyBase.OnSubModuleLoad()
+            Dim har As New Harmony("org.calradia.admiralnelson.findeverywhere")
+            har.PatchAll()
         End Sub
 
         Protected Overrides Sub OnApplicationTick(dt As Single)

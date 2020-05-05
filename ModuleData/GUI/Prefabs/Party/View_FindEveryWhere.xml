@@ -1,0 +1,72 @@
+﻿<Prefab>
+  <Constants>
+  </Constants>
+  <Variables>
+  </Variables>
+  <VisualDefinitions>
+    <VisualDefinition Name="TopMenu" TransitionDuration="0.2">
+      <VisualState PositionYOffset="0" State="Default" />
+    </VisualDefinition>
+  </VisualDefinitions>
+  <Window>
+    <Widget Id="EnhancementScreenTopBar" VisualDefinition="TopMenu" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
+		        SuggestedWidth="650" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="30"
+		        DoNotAcceptEvents="true">
+      <Children>
+         <!-- my changes -->
+        <!-- right side -->
+        <Widget
+					DoNotAcceptEvents="true"
+					WidthSizePolicy="Fixed"
+					HeightSizePolicy="Fixed"
+					SuggestedHeight="30"
+					SuggestedWidth="255"
+					VerticalAlignment="Center"
+					HorizontalAlignment="Right"
+					MarginRight="700"
+					Sprite="CharacterCreation\name_input_area">
+          <Children>
+            <EditableTextWidget
+							Id="Search"
+							Text="@SearchRight"
+							SuggestedHeight="14"
+							SuggestedWidth="250"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
+							MarginLeft="5"
+							MarginRight="0"
+							MarginTop="0"
+							MarginBottom="0"
+							Brush="Party.Search.TextBox" />
+          </Children>
+
+        </Widget>
+        <Widget
+            WidthSizePolicy="Fixed"
+            HeightSizePolicy="Fixed"
+            SuggestedWidth="25"
+            SuggestedHeight="24"
+            Sprite="Encyclopedia\icon_search"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            IsDisabled="true"
+            MarginRight="670"/>
+        <!-- right side -->
+        <!-- left side -->
+
+        <Widget
+                WidthSizePolicy="Fixed"
+                HeightSizePolicy="Fixed"
+                SuggestedWidth="25"
+                SuggestedHeight="24"
+                Sprite="Encyclopedia\icon_search"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                IsDisabled="true"
+                MarginLeft="670"/>
+        <!-- left side -->
+        <!-- my changes -->
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

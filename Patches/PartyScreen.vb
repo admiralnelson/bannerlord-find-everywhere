@@ -11,13 +11,14 @@ Imports TaleWorlds.Library
 Public Class PartyScreen
     Friend Shared searchOverlay As GauntletLayer
     Friend Shared searchVm As SearchPartyViewModel
+    Shared isInPartyScreen = False
 
     <HarmonyPatch("AddLayer")>
     Public Shared Sub Postfix(ByRef __instance As ScreenBase)
         If __instance.GetType() Is GetType(GauntletPartyScreen) AndAlso
             searchOverlay Is Nothing Then
             Dim partyScreen = CType(__instance, GauntletPartyScreen)
-            searchOverlay = New GauntletLayer(100)
+            searchOverlay = New GauntletLayer(110)
             Dim traverser = Traverse.Create(partyScreen)
             Dim pvm = traverser.Field(Of PartyVM)("_dataSource").Value
             Dim pstate = traverser.Field(Of PartyState)("_partyState").Value
@@ -25,6 +26,7 @@ Public Class PartyScreen
             searchOverlay.LoadMovie("View_FindEveryWhere", searchVm)
             searchOverlay.InputRestrictions.SetInputRestrictions(True, InputUsageMask.All)
             partyScreen.AddLayer(searchOverlay)
+            isInPartyScreen = True
         End If
     End Sub
 
@@ -38,6 +40,31 @@ Public Class PartyScreen
             searchVm.OnFinalize()
             searchVm = Nothing
             searchOverlay = Nothing
+            isInPartyScreen = False
+        End If
+    End Sub
+
+    <HarmonyPatch("OnFrameTick")>
+    Public Shared Sub Prefix(ByRef __instance As ScreenBase,
+                            ByRef dt As Single)
+        If __instance.GetType() Is GetType(GauntletPartyScreen) AndAlso
+            searchOverlay IsNot Nothing Then
+            If isInPartyScreen Then
+                If (Input.IsKeyDown(InputKey.LeftControl) Or
+                    Input.IsKeyDown(InputKey.RightControl)) AndAlso
+                   (Input.IsKeyDown(InputKey.LeftShift) Or
+                    Input.IsKeyDown(InputKey.RightShift)) AndAlso
+                    Input.IsKeyPressed(InputKey.F) Then
+                    Print("cntrl sht f pressed")
+                    SearchPartyViewModel.Instance.FindLeftPane()
+                ElseIf _
+                   (Input.IsKeyDown(InputKey.LeftControl) Or
+                    Input.IsKeyDown(InputKey.RightControl)) AndAlso
+                    Input.IsKeyPressed(InputKey.F) Then
+                    SearchPartyViewModel.Instance.FindRightPane()
+                    Print("cntrl  f pressed")
+                End If
+            End If
         End If
     End Sub
 

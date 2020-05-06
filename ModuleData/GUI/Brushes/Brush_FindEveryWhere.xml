@@ -1,16 +1,42 @@
 ﻿<Brushes>
-  <Brush Name="Party.Search.TextBox"
+  <Brush Name="Party.Search.TextBox.Right"
          Font="FiraSansExtraCondensed-Regular"
-         TextHorizontalAlignment="Center">
+         TextHorizontalAlignment="Left">
     <Styles>
       <Style Name="Default"
-			       FontColor="#F9EAD2FF"
-			       TextGlowColor="#000000FF"
-			       TextOutlineColor="#000000FF"
-			       TextOutlineAmount="0"
-			       TextGlowRadius="0"
-			       TextBlur="0"
-			       FontSize="22" />
+             FontColor="#F9EAD2FF"
+             TextGlowColor="#000000FF"
+             TextOutlineColor="#000000FF"
+             TextOutlineAmount="0"
+             TextGlowRadius="0"
+             TextBlur="0"
+             FontSize="35" />
     </Styles>
+    <SoundProperties>
+      <StateSounds>
+        <StateSound StateName="TransitionVisibleFull" Audio="mini_popup" />
+        <StateSound StateName="TransitionVisible" Audio="mini_popup" />
+      </StateSounds>
+    </SoundProperties>
+  </Brush>
+  <Brush Name="Party.Search.TextBox.Left"
+       Font="FiraSansExtraCondensed-Regular"
+       TextHorizontalAlignment="Right">
+    <Styles>
+      <Style Name="Default"
+             FontColor="#F9EAD2FF"
+             TextGlowColor="#000000FF"
+             TextOutlineColor="#000000FF"
+             TextOutlineAmount="0"
+             TextGlowRadius="0"
+             TextBlur="0"
+             FontSize="35" />
+    </Styles>
+    <SoundProperties>
+      <StateSounds>
+        <StateSound StateName="TransitionVisibleFull" Audio="mini_popup" />
+        <StateSound StateName="TransitionVisible" Audio="mini_popup" />
+      </StateSounds>
+    </SoundProperties>
   </Brush>
 </Brushes>

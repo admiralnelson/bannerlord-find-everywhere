@@ -4,74 +4,111 @@ Imports SandBox.GauntletUI
 Imports TaleWorlds.CampaignSystem
 Imports TaleWorlds.CampaignSystem.ViewModelCollection
 Imports TaleWorlds.Library
+Imports System.Diagnostics
 
 Public Class SearchPartyViewModel
     Inherits ViewModel
-    Const leftSide As Integer = PartyScreenLogic.PartyRosterSide.Left
-    Const rightSide As Integer = PartyScreenLogic.PartyRosterSide.Right
+
     Dim searchTermLeft As String
     Dim searchTermRight As String
     Dim bLeftVisible As Boolean = False
     Dim bRightVisible As Boolean = False
-    Dim partyCharsViewM As MBBindingList(Of PartyCharacterVM)
-    Dim partylogic As PartyScreenLogic
-    Dim originalPartyList As List(Of PartyCharacterVM)
-    Shared instance As SearchPartyViewModel
+    Dim partyCharsViewM, partyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
+    Dim otherPartyCharsViewM, otherPartyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
+
+    Dim originalPartyList, originalPartyPrisonerList As List(Of PartyCharacterVM)
+    Dim originalOtherPartyList, originalOtherPartyPrisonerList As List(Of PartyCharacterVM)
+
+    Dim partyScreenController As PartyScreenLogic
+    Dim partyViewModel As PartyVM
+
+    Shared mInstance As SearchPartyViewModel
+    Dim showRightSearchPanel = False
+    Dim showLeftSearchPanel = False
+
+    Public Shared ReadOnly Property Instance As SearchPartyViewModel
+        Get
+            Return mInstance
+        End Get
+    End Property
     Public Sub New(pvm As PartyVM,
                    psl As PartyScreenLogic,
                    parentScreen As GauntletPartyScreen)
+        partyScreenController = psl
+        partyViewModel = pvm
+
         partyCharsViewM = pvm.MainPartyTroops
-        partylogic = psl
-        AddHandler psl.AfterReset, AddressOf AfterReset
-        AddHandler psl.Update, AddressOf UpdateLabel
-        originalPartyList = pvm.MainPartyTroops.ToList()
-        instance = Me
+        partyCharsPrisonerViewM = pvm.MainPartyPrisoners
+        otherPartyCharsViewM = pvm.OtherPartyPrisoners
+        otherPartyCharsPrisonerViewM = pvm.OtherPartyPrisoners
+
+        UpdatePartyList(Nothing)
+
+        AddHandler psl.Update, AddressOf UpdatePartyList
+        mInstance = Me
     End Sub
 
-    Public Sub AfterReset(logic As PartyScreenLogic)
-        Print("search pvm has been reset")
+    Public Sub UpdatePartyList(cmd As PartyScreenLogic.PartyCommand)
+        Print("changes in party state")
+
+        originalPartyList = partyViewModel.MainPartyTroops.Where(Function(x) x.Number > 0).ToList()
+        originalPartyPrisonerList = partyViewModel.MainPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
+        originalOtherPartyList = partyViewModel.OtherPartyTroops.Where(Function(x) x.Number > 0).ToList()
+        originalOtherPartyPrisonerList = partyViewModel.OtherPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
     End Sub
 
     Public Sub UpdateLabel(command As PartyScreenLogic.PartyCommand)
 
     End Sub
 
-    Public Overloads Sub OnFinalize()
-
+#Region "Left Side"
+    Public Sub FindLeftPane()
+        LeftVisible = Not LeftVisible
+        'Print($"find left clicked state {LeftVisible}")
     End Sub
-
-    Public Overrides Sub RefreshValues()
-        MyBase.RefreshValues()
-
-    End Sub
-
-    Public Sub HideShowSearch(leftOrRight As Integer)
-
-    End Sub
-    Public Shared Sub Reset()
-        If instance Is Nothing Then Exit Sub
-        instance.partyCharsViewM.Clear()
-        For Each x In instance.originalPartyList
-            instance.partyCharsViewM.Add(x)
+    Public Sub ResetLeft()
+        otherPartyCharsViewM.Clear()
+        otherPartyCharsPrisonerViewM.Clear()
+        For Each x In originalOtherPartyList
+            otherPartyCharsViewM.Add(x)
+        Next
+        For Each x In originalOtherPartyPrisonerList
+            otherPartyCharsPrisonerViewM.Add(x)
         Next
     End Sub
-    Public Shared Sub Filter(keyword As String)
-        If instance Is Nothing Then Exit Sub
+    Public Sub FilterLeft(keyword As String)
         If keyword Is "" Then
-            Reset()
+            ResetLeft()
             Exit Sub
         End If
-        instance.partyCharsViewM.Clear()
+        otherPartyCharsViewM.Clear()
+        otherPartyCharsPrisonerViewM.Clear()
         'can't use list compreshension here :(
-        'instance.partyCharsViewM = instance.originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
+        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
         'good ol loop
-        For Each x In instance.originalPartyList
-            If x.Troop.Character.Name.Contains(keyword) Then
-                instance.partyCharsViewM.Add(x)
+        For Each x In originalOtherPartyList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                otherPartyCharsViewM.Add(x)
+            End If
+        Next
+        For Each x In originalOtherPartyPrisonerList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                otherPartyCharsPrisonerViewM.Add(x)
             End If
         Next
     End Sub
-
+    <DataSourceProperty>
+    Public Property LeftVisible As Boolean
+        Get
+            Return bLeftVisible
+        End Get
+        Set(ByVal value As Boolean)
+            If value <> bLeftVisible Then
+                bLeftVisible = value
+                OnPropertyChanged(NameOf(LeftVisible))
+            End If
+        End Set
+    End Property
     <DataSourceProperty>
     Public Property SearchLeft As String
         Get
@@ -82,9 +119,51 @@ Public Class SearchPartyViewModel
                 searchTermLeft = value
                 OnPropertyChanged(NameOf(SearchLeft))
                 'Print("value left changed " + value)
+                FilterLeft(value)
             End If
         End Set
     End Property
+#End Region
+
+#Region "Right Side"
+
+    Public Sub FindRightPane()
+        RightVisible = Not RightVisible
+        'Print($"find right clicked state {RightVisible}")
+    End Sub
+    Public Sub ResetRight()
+        partyCharsViewM.Clear()
+        partyCharsPrisonerViewM.Clear()
+        For Each x In originalPartyList
+            partyCharsViewM.Add(x)
+        Next
+        For Each x In originalPartyPrisonerList
+            partyCharsPrisonerViewM.Add(x)
+        Next
+    End Sub
+
+    Public Sub FilterRight(keyword As String)
+        If keyword Is "" Then
+            ResetRight()
+            Exit Sub
+        End If
+        partyCharsViewM.Clear()
+        partyCharsPrisonerViewM.Clear()
+        'can't use list compreshension here :(
+        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
+        'good ol loop
+        For Each x In originalPartyList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                partyCharsViewM.Add(x)
+            End If
+        Next
+        For Each x In originalPartyPrisonerList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                partyCharsPrisonerViewM.Add(x)
+            End If
+        Next
+    End Sub
+
     <DataSourceProperty>
     Public Property SearchRight As String
         Get
@@ -95,19 +174,7 @@ Public Class SearchPartyViewModel
                 searchTermRight = value
                 OnPropertyChanged(NameOf(SearchRight))
                 'Print("value right changed " + value)
-                Filter(value)
-            End If
-        End Set
-    End Property
-    <DataSourceProperty>
-    Public Property LeftVisible As Boolean
-        Get
-            Return bLeftVisible
-        End Get
-        Set(ByVal value As Boolean)
-            If value <> bLeftVisible Then
-                bLeftVisible = value
-                OnPropertyChanged(NameOf(LeftVisible))
+                FilterRight(value)
             End If
         End Set
     End Property
@@ -123,4 +190,21 @@ Public Class SearchPartyViewModel
             End If
         End Set
     End Property
+#End Region
+
+    <DataSourceProperty>
+    Public Property IconMargin As Single
+        Get
+            Dim partyenhancementsLoaded = HarmonyLib.Harmony.HasAnyPatches("top.hirtol.patch.partyenhancements")
+            If Not partyenhancementsLoaded Then
+                Return 600
+            End If
+            Return 550
+        End Get
+        Set(value As Single)
+            OnPropertyChanged(NameOf(IconMargin))
+        End Set
+    End Property
+
+
 End Class

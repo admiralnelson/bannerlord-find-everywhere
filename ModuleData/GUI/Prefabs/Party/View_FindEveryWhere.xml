@@ -7,63 +7,109 @@
     <VisualDefinition Name="TopMenu" TransitionDuration="0.2">
       <VisualState PositionYOffset="0" State="Default" />
     </VisualDefinition>
+    <VisualDefinition Name="TextBoxWidthRightTransition" TransitionDuration="0.2">
+      <VisualState SuggestedWidth="580" State="TransitionVisibleFull" />  
+      <VisualState SuggestedWidth="520" State="TransitionVisible" />
+      <VisualState SuggestedWidth="0" State="TransitionInvisible" />      
+    </VisualDefinition>
   </VisualDefinitions>
   <Window>
-    <Widget Id="EnhancementScreenTopBar" VisualDefinition="TopMenu" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"
-		        SuggestedWidth="650" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="30"
-		        DoNotAcceptEvents="true">
+    <Widget Id="EnhancementScreenTopBar" 
+            VisualDefinition="TopMenu" 
+            WidthSizePolicy="StretchToParent" 
+            HeightSizePolicy="StretchToParent"
+            SuggestedWidth="650" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top" 
+            MarginTop="30"
+            DoNotAcceptEvents="true">
       <Children>
-         <!-- my changes -->
         <!-- right side -->
-        <Widget
-					DoNotAcceptEvents="true"
-					WidthSizePolicy="Fixed"
-					HeightSizePolicy="Fixed"
-					SuggestedHeight="30"
-					SuggestedWidth="255"
-					VerticalAlignment="Center"
-					HorizontalAlignment="Right"
-					MarginRight="700"
-					Sprite="CharacterCreation\name_input_area">
+        <SearchBox
+          VisualDefinition="TextBoxWidthRightTransition" 
+          DoNotAcceptEvents="true"
+          WidthSizePolicy="Fixed"
+          HeightSizePolicy="Fixed"
+          SuggestedHeight="55"
+          SuggestedWidth="500"
+          IsCollapsed="@RightVisible"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Right"
+          MarginRight="5"
+          MarginTop="5"
+          Sprite="CharacterCreation\name_input_area">
           <Children>
             <EditableTextWidget
-							Id="Search"
-							Text="@SearchRight"
-							SuggestedHeight="14"
-							SuggestedWidth="250"
-							HorizontalAlignment="Left"
-							VerticalAlignment="Center"
-							MarginLeft="5"
-							MarginRight="0"
-							MarginTop="0"
-							MarginBottom="0"
-							Brush="Party.Search.TextBox" />
+              Id="Search"
+              Text="@SearchRight"
+              SuggestedHeight="14"
+              SuggestedWidth="600"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
+              MarginLeft="5"
+              MarginRight="0"
+              MarginTop="0"
+              MarginBottom="0"
+              Brush="Party.Search.TextBox.Right" />
           </Children>
 
-        </Widget>
-        <Widget
+        </SearchBox>
+        <ButtonWidget
             WidthSizePolicy="Fixed"
             HeightSizePolicy="Fixed"
-            SuggestedWidth="25"
-            SuggestedHeight="24"
+            SuggestedWidth="32"
+            SuggestedHeight="32"
             Sprite="Encyclopedia\icon_search"
-            VerticalAlignment="Center"
+            VerticalAlignment="Top"
             HorizontalAlignment="Right"
-            IsDisabled="true"
-            MarginRight="670"/>
+            IsDisabled="false"
+            MarginTop="15"
+            MarginRight="@IconMargin"
+            Command.Click="FindRightPane"/>
         <!-- right side -->
         <!-- left side -->
 
-        <Widget
-                WidthSizePolicy="Fixed"
-                HeightSizePolicy="Fixed"
-                SuggestedWidth="25"
-                SuggestedHeight="24"
-                Sprite="Encyclopedia\icon_search"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                IsDisabled="true"
-                MarginLeft="670"/>
+      <SearchBox
+          VisualDefinition="TextBoxWidthRightTransition" 
+          DoNotAcceptEvents="true"
+          WidthSizePolicy="Fixed"
+          HeightSizePolicy="Fixed"
+          SuggestedHeight="55"
+          SuggestedWidth="500"
+          IsCollapsed="@LeftVisible"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Left"
+          MarginRight="5"
+          MarginTop="5"
+          Sprite="CharacterCreation\name_input_area">
+          <Children>
+            <EditableTextWidget
+              Id="Search"
+              Text="@SearchLeft"
+              SuggestedHeight="14"
+              SuggestedWidth="600"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              MarginLeft="0"
+              MarginRight="5"
+              MarginTop="0"
+              MarginBottom="0"
+              Brush="Party.Search.TextBox.Left" />
+          </Children>
+
+        </SearchBox>
+        <ButtonWidget
+            WidthSizePolicy="Fixed"
+            HeightSizePolicy="Fixed"
+            SuggestedWidth="32"
+            SuggestedHeight="32"
+            Sprite="Encyclopedia\icon_search"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            IsDisabled="false"
+            MarginTop="15"
+            MarginLeft="@IconMargin"
+            Command.Click="FindLeftPane"/>
         <!-- left side -->
         <!-- my changes -->
       </Children>

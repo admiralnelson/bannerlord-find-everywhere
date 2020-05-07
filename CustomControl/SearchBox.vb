@@ -20,7 +20,7 @@ Public Class SearchBox
     Private Sub OnEvent(widget As PropertyOwnerObject,
                         propName As String,
                         val As Object)
-        Print(propName)
+        'Print(propName)
         Select Case propName
             'Case "SuggestedWidth"
             '    Print($"suggested width changed {CInt(val)}")
@@ -35,7 +35,7 @@ Public Class SearchBox
             '    End If
             '    Print($"state is {CurrentState}")
             Case "IsCollapsed"
-                Print($"IsCollapsed {CBool(val)}")
+                'Print($"IsCollapsed {CBool(val)}")
                 Dim value As Boolean = val
                 If value Then
                     If isEnchancedPartyLoaded Then
@@ -46,7 +46,7 @@ Public Class SearchBox
                 Else
                     SetState("TransitionInvisible")
                 End If
-                Print($"state is {CurrentState}")
+                'Print($"state is {CurrentState}")
             Case Else
 
         End Select
@@ -62,7 +62,7 @@ Public Class SearchBox
             If mIsCollapsed <> value Then
                 mIsCollapsed = value
                 OnPropertyChanged(value, NameOf(IsCollapsed))
-                Print($"OnPropertyChanged IsCollapsed {value}")
+                'Print($"OnPropertyChanged IsCollapsed {value}")
                 'RefreshState()
             End If
         End Set

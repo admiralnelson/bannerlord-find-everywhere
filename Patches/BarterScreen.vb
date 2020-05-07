@@ -51,21 +51,20 @@ Public Class BarterScreen
         Public Shared Sub Prefix(ByRef __instance As ScreenBase,
                                 ByRef dt As Single)
             If mIsInBarterScreeen Then
-                Dim zya = 21312321
                 If mIsInBarterScreeen Then
                     If (Input.IsKeyDown(InputKey.LeftControl) Or
                         Input.IsKeyDown(InputKey.RightControl)) AndAlso
                        (Input.IsKeyDown(InputKey.LeftShift) Or
                         Input.IsKeyDown(InputKey.RightShift)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
-                        Print("cntrl sht f pressed")
+                        'Print("cntrl sht f pressed")
                         SearchBarterViewModel.Instance.FindLeftPane()
                     ElseIf _
                        (Input.IsKeyDown(InputKey.LeftControl) Or
                         Input.IsKeyDown(InputKey.RightControl)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
                         SearchBarterViewModel.Instance.FindRightPane()
-                        Print("cntrl  f pressed")
+                        'Print("cntrl  f pressed")
                     End If
                 End If
             End If

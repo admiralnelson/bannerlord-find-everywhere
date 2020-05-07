@@ -55,14 +55,14 @@ Public Class PartyScreen
                    (Input.IsKeyDown(InputKey.LeftShift) Or
                     Input.IsKeyDown(InputKey.RightShift)) AndAlso
                     Input.IsKeyPressed(InputKey.F) Then
-                    Print("cntrl sht f pressed")
                     SearchPartyViewModel.Instance.FindLeftPane()
+                    'Print("cntrl sht f pressed")
                 ElseIf _
                    (Input.IsKeyDown(InputKey.LeftControl) Or
                     Input.IsKeyDown(InputKey.RightControl)) AndAlso
                     Input.IsKeyPressed(InputKey.F) Then
                     SearchPartyViewModel.Instance.FindRightPane()
-                    Print("cntrl  f pressed")
+                    'Print("cntrl  f pressed")
                 End If
             End If
         End If

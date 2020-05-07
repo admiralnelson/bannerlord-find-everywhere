@@ -63,8 +63,8 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Right"
             IsDisabled="false"
-            MarginTop="40"
-            MarginRight="600"
+            MarginTop="22"
+            MarginRight="520"
             Command.Click="FindRightPane"/>
         <!-- right side -->
         <!-- left side -->
@@ -107,8 +107,8 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             IsDisabled="false"
-            MarginTop="40"
-            MarginLeft="600"
+            MarginTop="22"
+            MarginLeft="520"
             Command.Click="FindLeftPane"/>
         <!-- left side -->
         <!-- my changes -->

@@ -62,14 +62,14 @@ Public Class ItemScreen
                    (Input.IsKeyDown(InputKey.LeftShift) Or
                     Input.IsKeyDown(InputKey.RightShift)) AndAlso
                     Input.IsKeyPressed(InputKey.F) Then
-                    Print("cntrl sht f pressed")
+                    'Print("cntrl sht f pressed")
                     SearchItemViewModel.Instance.FindLeftPane()
                 ElseIf _
                    (Input.IsKeyDown(InputKey.LeftControl) Or
                     Input.IsKeyDown(InputKey.RightControl)) AndAlso
                     Input.IsKeyPressed(InputKey.F) Then
                     SearchItemViewModel.Instance.FindRightPane()
-                    Print("cntrl  f pressed")
+                    'Print("cntrl  f pressed")
                 End If
             End If
         End If

@@ -50,6 +50,7 @@ Public Class SearchBarterViewModel
     Dim itemViewModel As SPBarterVM
     Dim showRightSearchPanel = False
     Dim showLeftSearchPanel = False
+    Dim originalBarterFunction As BarterTransformEventDelegate
 
     Public Shared ReadOnly Property Instance As SearchBarterViewModel
         Get
@@ -66,40 +67,36 @@ Public Class SearchBarterViewModel
         partyPrisonerViewM = bvm.RightPrisonerList
         partyFiefViewM = bvm.RightFiefList
         partyDiplomaticViewM = bvm.RightDiplomaticList
-        partyOtherViewM = bvm.RightOtherList
-        partyOfferViewM = bvm.RightOfferList
+        'partyOtherViewM = bvm.RightOtherList        
 
         traderItemViewM = bvm.LeftItemList
         traderPrisonerViewM = bvm.LeftPrisonerList
         traderFiefViewM = bvm.LeftFiefList
         traderDiplomaticViewM = bvm.LeftDiplomaticList
-        traderOtherViewM = bvm.LeftOtherList
-        traderOfferViewM = bvm.LeftOfferList
-
-
-        UpdateItem(Nothing, Nothing)
+        'traderOtherViewM = bvm.LeftOtherList
 
         mInstance = Me
         bm.OnTransfer = AddressOf UpdateItem
-
+        UpdateItem(Nothing, Nothing)
     End Sub
 
     Private Sub UpdateItem(barter As Barterable, transferable As Boolean)
-        Print("changes in party state")
+        'Print("changes in party state")
+        If barter IsNot Nothing Then
+            itemViewModel.OnTransferItem(barter, transferable)
+        End If
 
         originalPartyItemList = itemViewModel.RightItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalPartyDiplomaticList = itemViewModel.RightDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalPartyFiefList = itemViewModel.RightFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalPartyPrisonerList = itemViewModel.RightPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalTraderOtherList = itemViewModel.RightOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        'originalTraderOtherList = itemViewModel.RightOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
 
         originalTraderItemList = itemViewModel.LeftItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalTraderDiplomaticList = itemViewModel.LeftDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalTraderFiefList = itemViewModel.LeftFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalTraderPrisonerList = itemViewModel.LeftPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
-
-
+        'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
 
     End Sub
 
@@ -112,8 +109,20 @@ Public Class SearchBarterViewModel
     End Sub
     Public Sub ResetLeft()
         traderItemViewM.Clear()
+        traderDiplomaticViewM.Clear()
+        traderFiefViewM.Clear()
+        traderPrisonerViewM.Clear()
         For Each x In originalTraderItemList
             traderItemViewM.Add(x)
+        Next
+        For Each x In originalTraderDiplomaticList
+            traderDiplomaticViewM.Add(x)
+        Next
+        For Each x In originalTraderFiefList
+            traderFiefViewM.Add(x)
+        Next
+        For Each x In originalTraderPrisonerList
+            traderPrisonerViewM.Add(x)
         Next
     End Sub
     Public Sub FilterLeft(keyword As String)
@@ -122,6 +131,10 @@ Public Class SearchBarterViewModel
             Exit Sub
         End If
         traderItemViewM.Clear()
+        traderDiplomaticViewM.Clear()
+        traderFiefViewM.Clear()
+        traderPrisonerViewM.Clear()
+        'traderOtherViewM.Clear()
 
         'can't use list compreshension here :(
         'partyItemViewM = originalTraderItemList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
@@ -146,11 +159,11 @@ Public Class SearchBarterViewModel
                 traderPrisonerViewM.Add(x)
             End If
         Next
-        For Each x In originalTraderOtherList
-            If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
-                traderOtherViewM.Add(x)
-            End If
-        Next
+        'For Each x In originalTraderOtherList
+        '    If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
+        '        traderOtherViewM.Add(x)
+        '    End If
+        'Next
     End Sub
     <DataSourceProperty>
     Public Property LeftVisible As Boolean
@@ -188,8 +201,20 @@ Public Class SearchBarterViewModel
     End Sub
     Public Sub ResetRight()
         partyItemViewM.Clear()
+        partyDiplomaticViewM.Clear()
+        partyFiefViewM.Clear()
+        partyPrisonerViewM.Clear()
         For Each x In originalPartyItemList
             partyItemViewM.Add(x)
+        Next
+        For Each x In originalPartyDiplomaticList
+            partyDiplomaticViewM.Add(x)
+        Next
+        For Each x In originalPartyFiefList
+            partyFiefViewM.Add(x)
+        Next
+        For Each x In originalPartyPrisonerList
+            partyPrisonerViewM.Add(x)
         Next
     End Sub
 
@@ -199,6 +224,10 @@ Public Class SearchBarterViewModel
             Exit Sub
         End If
         partyItemViewM.Clear()
+        partyDiplomaticViewM.Clear()
+        partyFiefViewM.Clear()
+        partyPrisonerViewM.Clear()
+        'partyOtherViewM.Clear()
         'can't use list compreshension here :(
         'partyItemViewM = originalPartyItemList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
         'good ol loop
@@ -210,24 +239,24 @@ Public Class SearchBarterViewModel
         Next
         For Each x In originalPartyDiplomaticList
             If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
-                partyItemViewM.Add(x)
+                partyDiplomaticViewM.Add(x)
             End If
         Next
         For Each x In originalPartyFiefList
             If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
-                partyItemViewM.Add(x)
+                partyFiefViewM.Add(x)
             End If
         Next
         For Each x In originalPartyPrisonerList
             If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
-                partyItemViewM.Add(x)
+                partyPrisonerViewM.Add(x)
             End If
         Next
-        For Each x In originalPartyOtherList
-            If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
-                partyItemViewM.Add(x)
-            End If
-        Next
+        'For Each x In originalPartyOtherList
+        '    If x.ItemLbl.ToLower().Contains(keyword.ToLower()) And x.TotalItemCount > 0 Then
+        '        partyOtherViewM.Add(x)
+        '    End If
+        'Next
     End Sub
 
     <DataSourceProperty>

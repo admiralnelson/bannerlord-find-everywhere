@@ -1,0 +1,118 @@
+﻿<Prefab>
+  <Constants>
+  </Constants>
+  <Variables>
+  </Variables>
+  <VisualDefinitions>
+    <VisualDefinition Name="TopMenu" TransitionDuration="0.2">
+      <VisualState PositionYOffset="0" State="Default" />
+    </VisualDefinition>
+    <VisualDefinition Name="TextBoxWidthRightTransition" TransitionDuration="0.1">
+      <VisualState SuggestedWidth="520" State="TransitionVisibleFull" />
+      <VisualState SuggestedWidth="520" State="TransitionVisible" />
+      <VisualState SuggestedWidth="0" State="TransitionInvisible" />
+    </VisualDefinition>
+  </VisualDefinitions>
+  <Window>
+    <Widget Id="EnhancementScreenTopBar"
+            VisualDefinition="TopMenu"
+            WidthSizePolicy="StretchToParent"
+            HeightSizePolicy="StretchToParent"
+            SuggestedWidth="650"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            MarginTop="30"
+            DoNotAcceptEvents="true">
+      <Children>
+        <!-- right side -->
+        <SearchBox
+          VisualDefinition="TextBoxWidthRightTransition"
+          DoNotAcceptEvents="true"
+          WidthSizePolicy="Fixed"
+          HeightSizePolicy="Fixed"
+          SuggestedHeight="55"
+          SuggestedWidth="500"
+          IsCollapsed="@RightVisible"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Right"
+          MarginRight="5"
+          MarginTop="5"
+          Sprite="CharacterCreation\name_input_area">
+          <Children>
+            <EditableTextWidget
+              Id="Search"
+              Text="@SearchRight"
+              SuggestedHeight="14"
+              SuggestedWidth="600"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Center"
+              MarginLeft="5"
+              MarginRight="0"
+              MarginTop="0"
+              MarginBottom="0"
+              Brush="Party.Search.TextBox.Right" />
+          </Children>
+
+        </SearchBox>
+        <ButtonWidget
+            WidthSizePolicy="Fixed"
+            HeightSizePolicy="Fixed"
+            SuggestedWidth="32"
+            SuggestedHeight="32"
+            Sprite="Encyclopedia\icon_search"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Right"
+            IsDisabled="false"
+            MarginTop="40"
+            MarginRight="600"
+            Command.Click="FindRightPane"/>
+        <!-- right side -->
+        <!-- left side -->
+
+        <SearchBox
+            VisualDefinition="TextBoxWidthRightTransition"
+            DoNotAcceptEvents="true"
+            WidthSizePolicy="Fixed"
+            HeightSizePolicy="Fixed"
+            SuggestedHeight="55"
+            SuggestedWidth="500"
+            IsCollapsed="@LeftVisible"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            MarginRight="5"
+            MarginTop="5"
+            Sprite="CharacterCreation\name_input_area">
+          <Children>
+            <EditableTextWidget
+              Id="Search"
+              Text="@SearchLeft"
+              SuggestedHeight="14"
+              SuggestedWidth="600"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              MarginLeft="0"
+              MarginRight="5"
+              MarginTop="0"
+              MarginBottom="0"
+              Brush="Party.Search.TextBox.Left" />
+          </Children>
+
+        </SearchBox>
+        <ButtonWidget
+            WidthSizePolicy="Fixed"
+            HeightSizePolicy="Fixed"
+            SuggestedWidth="32"
+            SuggestedHeight="32"
+            Sprite="Encyclopedia\icon_search"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            IsDisabled="false"
+            MarginTop="40"
+            MarginLeft="600"
+            Command.Click="FindLeftPane"/>
+        <!-- left side -->
+        <!-- my changes -->
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

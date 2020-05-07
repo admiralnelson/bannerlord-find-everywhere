@@ -7,7 +7,7 @@
     <VisualDefinition Name="TopMenu" TransitionDuration="0.2">
       <VisualState PositionYOffset="0" State="Default" />
     </VisualDefinition>
-    <VisualDefinition Name="TextBoxWidthRightTransition" TransitionDuration="0.2">
+    <VisualDefinition Name="TextBoxWidthRightTransition" TransitionDuration="0.1">
       <VisualState SuggestedWidth="580" State="TransitionVisibleFull" />  
       <VisualState SuggestedWidth="520" State="TransitionVisible" />
       <VisualState SuggestedWidth="0" State="TransitionInvisible" />      

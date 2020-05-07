@@ -270,6 +270,7 @@
     <Compile Include="Patches\ItemScreen.vb" />
     <Compile Include="Patches\PartyScreen.vb" />
     <Compile Include="Util.vb" />
+    <Compile Include="ViewModels\SearchItemViewModel.vb" />
     <Compile Include="ViewModels\SearchPartyViewModel.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -294,7 +295,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ModuleData\GUI\Brushes\Brush_FindEveryWhere.xml" />
-    <Content Include="ModuleData\GUI\Prefabs\Party\View_FindEveryWhere.xml">
+    <Content Include="ModuleData\GUI\Prefabs\Party\View_FindEveryWhere_Item.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ModuleData\GUI\Prefabs\Party\View_FindEveryWhere_Troop.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="ModuleData\Submodule.xml" />

@@ -5,6 +5,7 @@ Imports TaleWorlds.CampaignSystem
 Imports TaleWorlds.CampaignSystem.ViewModelCollection
 Imports TaleWorlds.Library
 Imports System.Diagnostics
+Imports TaleWorlds.Core.ViewModelCollection
 
 Public Class SearchPartyViewModel
     Inherits ViewModel
@@ -122,6 +123,16 @@ Public Class SearchPartyViewModel
             End If
         End Set
     End Property
+    Dim mTooltipSearchLeftBtn As New HintViewModel("Search on the left side. (Ctrl+Shift+F)")
+    <DataSourceProperty>
+    Public Property TooltipSearchLeftBtn As HintViewModel
+        Get
+            Return mTooltipSearchLeftBtn
+        End Get
+        Set(ByVal value As HintViewModel)
+            mTooltipSearchLeftBtn = value
+        End Set
+    End Property
 #End Region
 
 #Region "Right Side"
@@ -187,6 +198,16 @@ Public Class SearchPartyViewModel
                 bRightVisible = value
                 OnPropertyChanged(NameOf(RightVisible))
             End If
+        End Set
+    End Property
+    Dim mTooltipSearchRightBtn As New HintViewModel("Search on the right side. (Ctrl+F)")
+    <DataSourceProperty>
+    Public Property TooltipSearchRightBtn As HintViewModel
+        Get
+            Return mTooltipSearchRightBtn
+        End Get
+        Set(ByVal value As HintViewModel)
+            mTooltipSearchRightBtn = value
         End Set
     End Property
 #End Region

@@ -76,6 +76,18 @@ Public Class SearchBarterViewModel
         traderDiplomaticViewM = bvm.LeftDiplomaticList
         'traderOtherViewM = bvm.LeftOtherList
 
+        originalPartyItemList = itemViewModel.RightItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalPartyDiplomaticList = itemViewModel.RightDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalPartyFiefList = itemViewModel.RightFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalPartyPrisonerList = itemViewModel.RightPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        'originalTraderOtherList = itemViewModel.RightOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
+
+        originalTraderItemList = itemViewModel.LeftItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalTraderDiplomaticList = itemViewModel.LeftDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalTraderFiefList = itemViewModel.LeftFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        originalTraderPrisonerList = itemViewModel.LeftPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()   
+
         mInstance = Me
         bm.OnTransfer = AddressOf UpdateItem
         UpdateItem(Nothing, Nothing)
@@ -87,18 +99,6 @@ Public Class SearchBarterViewModel
         If barter IsNot Nothing Then
             itemViewModel.OnTransferItem(barter, transferable)
         End If
-
-        originalPartyItemList = itemViewModel.RightItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalPartyDiplomaticList = itemViewModel.RightDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalPartyFiefList = itemViewModel.RightFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalPartyPrisonerList = itemViewModel.RightPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        'originalTraderOtherList = itemViewModel.RightOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
-
-        originalTraderItemList = itemViewModel.LeftItemList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalTraderDiplomaticList = itemViewModel.LeftDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalTraderFiefList = itemViewModel.LeftFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        originalTraderPrisonerList = itemViewModel.LeftPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()        
 
     End Sub
 
@@ -193,6 +193,16 @@ Public Class SearchBarterViewModel
             End If
         End Set
     End Property
+    Dim mTooltipSearchLeftBtn As New HintViewModel("Search on the left side. (Ctrl+Shift+F)")
+    <DataSourceProperty>
+    Public Property TooltipSearchLeftBtn As HintViewModel
+        Get
+            Return mTooltipSearchLeftBtn
+        End Get
+        Set(ByVal value As HintViewModel)
+            mTooltipSearchLeftBtn = value
+        End Set
+    End Property
 #End Region
 
 #Region "Right Side"
@@ -285,6 +295,16 @@ Public Class SearchBarterViewModel
                 bRightVisible = value
                 OnPropertyChanged(NameOf(RightVisible))
             End If
+        End Set
+    End Property
+    Dim mTooltipSearchRightBtn As New HintViewModel("Search on the right side. (Ctrl+F)")
+    <DataSourceProperty>
+    Public Property TooltipSearchRightBtn As HintViewModel
+        Get
+            Return mTooltipSearchRightBtn
+        End Get
+        Set(ByVal value As HintViewModel)
+            mTooltipSearchRightBtn = value
         End Set
     End Property
 #End Region

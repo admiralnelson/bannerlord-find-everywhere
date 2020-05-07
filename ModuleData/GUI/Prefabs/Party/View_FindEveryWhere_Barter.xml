@@ -65,7 +65,16 @@
             IsDisabled="false"
             MarginTop="22"
             MarginRight="520"
-            Command.Click="FindRightPane"/>
+            Command.Click="FindRightPane">
+            <Children>
+              <HintWidget
+                 DataSource="{TooltipSearchRightBtn}"
+                 WidthSizePolicy="StretchToParent"
+                 HeightSizePolicy="StretchToParent"
+                 Command.HoverBegin="ExecuteBeginHint"
+                 Command.HoverEnd="ExecuteEndHint" />
+            </Children>
+        </ButtonWidget>
         <!-- right side -->
         <!-- left side -->
 
@@ -109,7 +118,16 @@
             IsDisabled="false"
             MarginTop="22"
             MarginLeft="520"
-            Command.Click="FindLeftPane"/>
+            Command.Click="FindLeftPane">
+            <Children>
+              <HintWidget
+                 DataSource="{TooltipSearchLeftBtn}"
+                 WidthSizePolicy="StretchToParent"
+                 HeightSizePolicy="StretchToParent"
+                 Command.HoverBegin="ExecuteBeginHint"
+                 Command.HoverEnd="ExecuteEndHint" />
+            </Children>
+        </ButtonWidget>
         <!-- left side -->
         <!-- my changes -->
       </Children>

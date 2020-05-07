@@ -1,4 +1,4 @@
-Find Anywhere 
+Find Everywhere 
 =======================
 Search within long items, troops, and even in barter screen.  
 This bannerlord mod also available in release section or in nexus mods.  

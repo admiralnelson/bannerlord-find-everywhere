@@ -8,6 +8,7 @@ Imports System.Diagnostics
 Imports TaleWorlds.Core.ViewModelCollection
 Imports System
 Imports TaleWorlds.CampaignSystem.BarterManager
+Imports HarmonyLib
 
 Public Class SearchBarterViewModel
     Inherits ViewModel
@@ -45,12 +46,12 @@ Public Class SearchBarterViewModel
         originalTraderOtherList As List(Of BarterItemVM)
 
 
-    Shared mInstance As SearchBarterViewModel
+    Friend Shared mInstance As SearchBarterViewModel
     Dim inventoryController As BarterManager
     Dim itemViewModel As SPBarterVM
     Dim showRightSearchPanel = False
     Dim showLeftSearchPanel = False
-    Dim originalBarterFunction As BarterTransformEventDelegate
+    Dim ready = False
 
     Public Shared ReadOnly Property Instance As SearchBarterViewModel
         Get
@@ -78,9 +79,10 @@ Public Class SearchBarterViewModel
         mInstance = Me
         bm.OnTransfer = AddressOf UpdateItem
         UpdateItem(Nothing, Nothing)
+        ready = True
     End Sub
 
-    Private Sub UpdateItem(barter As Barterable, transferable As Boolean)
+    Private Sub UpdateItem(barter As Barterable, Optional transferable As Boolean = False)
         'Print("changes in party state")
         If barter IsNot Nothing Then
             itemViewModel.OnTransferItem(barter, transferable)
@@ -96,7 +98,7 @@ Public Class SearchBarterViewModel
         originalTraderDiplomaticList = itemViewModel.LeftDiplomaticList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalTraderFiefList = itemViewModel.LeftFiefList.Where(Function(x) x.TotalItemCount > 0).ToList()
         originalTraderPrisonerList = itemViewModel.LeftPrisonerList.Where(Function(x) x.TotalItemCount > 0).ToList()
-        'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()
+        'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()        
 
     End Sub
 
@@ -297,5 +299,13 @@ Public Class SearchBarterViewModel
         End Set
     End Property
 
-
+    <HarmonyPatch(GetType(SPBarterVM))>
+    Public Class SearchBarterAux
+        <HarmonyPatch("ExecuteReset")>
+        Public Shared Sub Postfix()
+            If mInstance IsNot Nothing Then
+                mInstance.UpdateItem(Nothing)
+            End If
+        End Sub
+    End Class
 End Class

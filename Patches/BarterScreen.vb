@@ -47,6 +47,7 @@ Public Class BarterScreen
 
     <HarmonyPatch(GetType(MissionView))>
     Public Class BarterScreenKeyboard
+        Friend Shared debouncer = 0
         <HarmonyPatch("OnMissionScreenTick")>
         Public Shared Sub Prefix(ByRef __instance As ScreenBase,
                                 ByRef dt As Single)
@@ -58,12 +59,21 @@ Public Class BarterScreen
                         Input.IsKeyDown(InputKey.RightShift)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
                         'Print("cntrl sht f pressed")
-                        SearchBarterViewModel.Instance.FindLeftPane()
+                        debouncer = debouncer + dt
+                        If debouncer > 0.15 Then
+                            SearchBarterViewModel.Instance.FindLeftPane()
+                            debouncer = 0
+                        End If
+
                     ElseIf _
                        (Input.IsKeyDown(InputKey.LeftControl) Or
                         Input.IsKeyDown(InputKey.RightControl)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
-                        SearchBarterViewModel.Instance.FindRightPane()
+                        debouncer = debouncer + dt
+                        If debouncer > 0.15 Then
+                            SearchBarterViewModel.Instance.FindRightPane()
+                            debouncer = 0
+                        End If
                         'Print("cntrl  f pressed")
                     End If
                 End If

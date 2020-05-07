@@ -49,7 +49,7 @@ Public Class SearchItemViewModel
     End Sub
 
     Private Sub UpdateItemList(inventoryLogic As InventoryLogic, results As List(Of TransferCommandResult))
-        Print("changes in party state")
+        'Print("changes in party state")
 
         originalPartyItemList = itemViewModel.RightItemListVM.Where(Function(x) x.ItemCount > 0).ToList()
         originalTraderItemList = itemViewModel.LeftItemListVM.Where(Function(x) x.ItemCount > 0).ToList()

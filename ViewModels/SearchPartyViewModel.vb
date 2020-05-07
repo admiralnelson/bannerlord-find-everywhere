@@ -48,7 +48,7 @@ Public Class SearchPartyViewModel
     End Sub
 
     Public Sub UpdatePartyList(cmd As PartyScreenLogic.PartyCommand)
-        Print("changes in party state")
+        'Print("changes in party state")
 
         originalPartyList = partyViewModel.MainPartyTroops.Where(Function(x) x.Number > 0).ToList()
         originalPartyPrisonerList = partyViewModel.MainPartyPrisoners.Where(Function(x) x.Number > 0).ToList()

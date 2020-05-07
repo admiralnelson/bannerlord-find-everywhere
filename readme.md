@@ -8,5 +8,6 @@ Compatible with Party Enchancement screen mod.
 - [ ] Milestone 2 => search within save data, your fiefs, and other lords in troop management window  
 - [ ] Milestone 3 => macos like spotlight search  
 
+[nexusmod link](https://www.nexusmods.com/mountandblade2bannerlord/mods/1341)
 Video demonstration: 
 [![video demo](https://i.ytimg.com/vi_webp/3_5grCLr6K8/maxresdefault.webp)](https://www.youtube.com/watch?v=3_5grCLr6K8&feature=youtu.be)

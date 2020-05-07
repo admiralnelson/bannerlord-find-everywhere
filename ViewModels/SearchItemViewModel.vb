@@ -34,8 +34,7 @@ Public Class SearchItemViewModel
         End Get
     End Property
     Public Sub New(ivm As SPInventoryVM,
-                   ivl As InventoryLogic,
-                   parentScreen As InventoryGauntletScreen)
+                   ivl As InventoryLogic)
         inventoryController = ivl
         itemViewModel = ivm
 
@@ -43,13 +42,13 @@ Public Class SearchItemViewModel
         partyItemViewM = ivm.RightItemListVM
         traderItemViewM = ivm.LeftItemListVM
 
-        UpdatePartyList(Nothing, Nothing)
+        UpdateItemList(Nothing, Nothing)
 
-        AddHandler ivl.AfterTransfer, AddressOf UpdatePartyList
+        AddHandler ivl.AfterTransfer, AddressOf UpdateItemList
         mInstance = Me
     End Sub
 
-    Private Sub UpdatePartyList(inventoryLogic As InventoryLogic, results As List(Of TransferCommandResult))
+    Private Sub UpdateItemList(inventoryLogic As InventoryLogic, results As List(Of TransferCommandResult))
         Print("changes in party state")
 
         originalPartyItemList = itemViewModel.RightItemListVM.Where(Function(x) x.ItemCount > 0).ToList()

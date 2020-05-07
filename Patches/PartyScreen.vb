@@ -22,7 +22,7 @@ Public Class PartyScreen
             Dim traverser = Traverse.Create(partyScreen)
             Dim pvm = traverser.Field(Of PartyVM)("_dataSource").Value
             Dim pstate = traverser.Field(Of PartyState)("_partyState").Value
-            searchVm = New SearchPartyViewModel(pvm, pstate.PartyScreenLogic, partyScreen)
+            searchVm = New SearchPartyViewModel(pvm, pstate.PartyScreenLogic)
             searchOverlay.LoadMovie("View_FindEveryWhere_Troop", searchVm)
             searchOverlay.InputRestrictions.SetInputRestrictions(True, InputUsageMask.All)
             partyScreen.AddLayer(searchOverlay)

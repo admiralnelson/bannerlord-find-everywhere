@@ -22,7 +22,7 @@ Public Class ItemScreen
             Dim traverser = Traverse.Create(itemScreen)
             Dim ivm = traverser.Field(Of SPInventoryVM)("_dataSource").Value
             Dim istate = traverser.Field(Of InventoryState)("_inventoryState").Value
-            searchVm = New SearchItemViewModel(ivm, istate.InventoryLogic, itemScreen)
+            searchVm = New SearchItemViewModel(ivm, istate.InventoryLogic)
             searchOverlay.LoadMovie("View_FindEveryWhere_Item", searchVm)
             searchOverlay.InputRestrictions.SetInputRestrictions(True, InputUsageMask.All)
             itemScreen.AddLayer(searchOverlay)

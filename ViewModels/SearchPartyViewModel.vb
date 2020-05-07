@@ -32,8 +32,7 @@ Public Class SearchPartyViewModel
         End Get
     End Property
     Public Sub New(pvm As PartyVM,
-                   psl As PartyScreenLogic,
-                   parentScreen As GauntletPartyScreen)
+                   psl As PartyScreenLogic)
         partyScreenController = psl
         partyViewModel = pvm
 

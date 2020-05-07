@@ -2,6 +2,7 @@ Find Anywhere
 =======================
 Search within long items, troops, and even in barter screen.  
 This bannerlord mod also available in release section or in nexus mods.  
+Compatible with Party Enchancement screen mod.  
 
 - [x] Milestone 1 => search within items, troops, and barter screen  
 - [ ] Milestone 2 => search within save data, your fiefs, and other lords in troop management window  

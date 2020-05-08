@@ -52,30 +52,28 @@ Public Class BarterScreen
         Public Shared Sub Prefix(ByRef __instance As ScreenBase,
                                 ByRef dt As Single)
             If mIsInBarterScreeen Then
-                If mIsInBarterScreeen Then
-                    If (Input.IsKeyDown(InputKey.LeftControl) Or
+                If (Input.IsKeyDown(InputKey.LeftControl) Or
                         Input.IsKeyDown(InputKey.RightControl)) AndAlso
                        (Input.IsKeyDown(InputKey.LeftShift) Or
                         Input.IsKeyDown(InputKey.RightShift)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
-                        'Print("cntrl sht f pressed")
-                        debouncer = debouncer + dt
-                        If debouncer > 0.15 Then
-                            SearchBarterViewModel.Instance.FindLeftPane()
-                            debouncer = 0
-                        End If
+                    'Print("cntrl sht f pressed")
+                    debouncer = debouncer + dt
+                    If debouncer > 0.15 Then
+                        SearchBarterViewModel.Instance.FindLeftPane()
+                        debouncer = 0
+                    End If
 
-                    ElseIf _
+                ElseIf _
                        (Input.IsKeyDown(InputKey.LeftControl) Or
                         Input.IsKeyDown(InputKey.RightControl)) AndAlso
                         Input.IsKeyPressed(InputKey.F) Then
-                        debouncer = debouncer + dt
-                        If debouncer > 0.15 Then
-                            SearchBarterViewModel.Instance.FindRightPane()
-                            debouncer = 0
-                        End If
-                        'Print("cntrl  f pressed")
+                    debouncer = debouncer + dt
+                    If debouncer > 0.15 Then
+                        SearchBarterViewModel.Instance.FindRightPane()
+                        debouncer = 0
                     End If
+                    'Print("cntrl  f pressed")
                 End If
             End If
         End Sub

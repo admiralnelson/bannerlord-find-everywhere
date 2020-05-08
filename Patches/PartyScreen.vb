@@ -2,6 +2,7 @@
 Imports SandBox.GauntletUI
 Imports TaleWorlds.CampaignSystem
 Imports TaleWorlds.CampaignSystem.ViewModelCollection
+Imports TaleWorlds.Core
 Imports TaleWorlds.Engine.GauntletUI
 Imports TaleWorlds.Engine.Screens
 Imports TaleWorlds.InputSystem

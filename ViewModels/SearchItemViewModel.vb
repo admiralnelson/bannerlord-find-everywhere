@@ -7,6 +7,10 @@ Imports TaleWorlds.Library
 Imports System.Diagnostics
 Imports TaleWorlds.Core.ViewModelCollection
 Imports System
+Imports HarmonyLib
+Imports TaleWorlds.Core
+Imports System.Reflection
+Imports TaleWorlds.MountAndBlade
 
 Public Class SearchItemViewModel
     Inherits ViewModel
@@ -16,17 +20,19 @@ Public Class SearchItemViewModel
     Dim bLeftVisible As Boolean = False
     Dim bRightVisible As Boolean = False
 
-    Dim partyItemViewM As MBBindingList(Of SPItemVM)
-    Dim traderItemViewM As MBBindingList(Of SPItemVM)
+    Friend Shared partyItemViewM As MBBindingList(Of SPItemVM)
+    Friend Shared traderItemViewM As MBBindingList(Of SPItemVM)
 
-    Dim originalPartyItemList As List(Of SPItemVM)
-    Dim originalTraderItemList As List(Of SPItemVM)
+    Shared partyItemList As List(Of SPItemVM)
+    Shared traderItemList As List(Of SPItemVM)
 
     Shared mInstance As SearchItemViewModel
     Dim inventoryController As InventoryLogic
     Dim itemViewModel As SPInventoryVM
     Dim showRightSearchPanel = False
     Dim showLeftSearchPanel = False
+    Dim hasBeenReset = False
+    Dim missionCtx As Mission
 
     Public Shared ReadOnly Property Instance As SearchItemViewModel
         Get
@@ -37,50 +43,64 @@ Public Class SearchItemViewModel
                    ivl As InventoryLogic)
         inventoryController = ivl
         itemViewModel = ivm
-
+        missionCtx = Mission.Current
 
         partyItemViewM = ivm.RightItemListVM
         traderItemViewM = ivm.LeftItemListVM
 
-        UpdateItemList(Nothing, Nothing)
+        partyItemList = itemViewModel.RightItemListVM.ToList()
+        traderItemList = itemViewModel.LeftItemListVM.ToList()
+        UpdateReset(Nothing)
 
+        AddHandler ivl.AfterReset, AddressOf UpdateReset
         AddHandler ivl.AfterTransfer, AddressOf UpdateItemList
         mInstance = Me
     End Sub
 
     Private Sub UpdateItemList(inventoryLogic As InventoryLogic, results As List(Of TransferCommandResult))
-        'Print("changes in party state")
 
-        originalPartyItemList = itemViewModel.RightItemListVM.Where(Function(x) x.ItemCount > 0).ToList()
-        originalTraderItemList = itemViewModel.LeftItemListVM.Where(Function(x) x.ItemCount > 0).ToList()
     End Sub
 
+    Private Sub UpdateReset(ivl As InventoryLogic)
+        SearchLeft = ""
+        SearchRight = ""
+        'FilterRight(SearchRight)
+        'FilterLeft(SearchLeft)
+        'Print("changes in party state")        
 
+    End Sub
+
+    Private Function GetItemUsageFlag(item As WeaponComponentData) As ItemObject.ItemUsageSetFlags
+        If String.IsNullOrEmpty(item.ItemUsage) Then
+            Return MBItem.GetItemUsageSetFlags(item.ItemUsage)
+        End If
+        Return 0
+    End Function
 #Region "Left Side"
     Public Sub FindLeftPane()
         LeftVisible = Not LeftVisible
         'Print($"find left clicked state {LeftVisible}")
     End Sub
-    Public Sub ResetLeft()
-        traderItemViewM.Clear()
-        For Each x In originalTraderItemList
-            traderItemViewM.Add(x)
-        Next
-    End Sub
     Public Sub FilterLeft(keyword As String)
-        If keyword Is "" Then
-            ResetLeft()
+        If keyword Is Nothing Then
             Exit Sub
         End If
+        Dim useCivilianOutfit = False
+        If missionCtx IsNot Nothing Then
+            useCivilianOutfit = missionCtx IsNot Nothing AndAlso missionCtx.DoesMissionRequireCivilianEquipment
+        End If
+        Dim reset = New SPInventoryVM(inventoryController, useCivilianOutfit,
+                                      New Func(Of WeaponComponentData, ItemObject.ItemUsageSetFlags)(AddressOf GetItemUsageFlag),
+                                      "Nothing")
+        traderItemList.Clear()
         traderItemViewM.Clear()
-
-        'can't use list compreshension here :(
-        'partyItemViewM = originalPartyItemList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
-        'good ol loop
-        For Each x In originalTraderItemList
-            If x.ItemDescription.ToLower().Contains(keyword.ToLower()) And x.ItemCount > 0 Then
-                traderItemViewM.Add(x)
-            End If
+        If keyword IsNot "" Then
+            traderItemList = reset.LeftItemListVM.Where(Function(x) x.ItemDescription.ToLower().Contains(keyword.ToLower())).ToList()
+        Else
+            traderItemList = reset.LeftItemListVM.ToList()
+        End If
+        For Each x In traderItemList
+            traderItemViewM.Add(x)
         Next
     End Sub
     <DataSourceProperty>
@@ -127,26 +147,26 @@ Public Class SearchItemViewModel
         RightVisible = Not RightVisible
         'Print($"find right clicked state {RightVisible}")
     End Sub
-    Public Sub ResetRight()
-        partyItemViewM.Clear()
-        For Each x In originalPartyItemList
-            partyItemViewM.Add(x)
-        Next
-    End Sub
-
     Public Sub FilterRight(keyword As String)
-        If keyword Is "" Then
-            ResetRight()
+        If keyword Is Nothing Then
             Exit Sub
         End If
+        Dim useCivilianOutfit = False
+        If missionCtx IsNot Nothing Then
+            useCivilianOutfit = missionCtx IsNot Nothing AndAlso missionCtx.DoesMissionRequireCivilianEquipment
+        End If
+        Dim reset = New SPInventoryVM(inventoryController, useCivilianOutfit,
+                                      New Func(Of WeaponComponentData, ItemObject.ItemUsageSetFlags)(AddressOf GetItemUsageFlag),
+                                      "Nothing")
+        partyItemList.Clear()
         partyItemViewM.Clear()
-        'can't use list compreshension here :(
-        'partyItemViewM = originalPartyItemList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
-        'good ol loop
-        For Each x In originalPartyItemList
-            If x.ItemDescription.ToLower().Contains(keyword.ToLower()) And x.ItemCount > 0 Then
-                partyItemViewM.Add(x)
-            End If
+        If keyword IsNot "" Then
+            partyItemList = reset.RightItemListVM.Where(Function(x) x.ItemDescription.ToLower().Contains(keyword.ToLower())).ToList()
+        Else
+            partyItemList = reset.RightItemListVM.ToList()
+        End If
+        For Each x In partyItemList
+            partyItemViewM.Add(x)
         Next
     End Sub
 
@@ -197,5 +217,4 @@ Public Class SearchItemViewModel
             OnPropertyChanged(NameOf(IconMargin))
         End Set
     End Property
-
 End Class

@@ -6,6 +6,9 @@ Imports TaleWorlds.CampaignSystem.ViewModelCollection
 Imports TaleWorlds.Library
 Imports System.Diagnostics
 Imports TaleWorlds.Core.ViewModelCollection
+Imports TaleWorlds.MountAndBlade
+Imports TaleWorlds.Core
+Imports System
 
 Public Class SearchPartyViewModel
     Inherits ViewModel
@@ -14,6 +17,7 @@ Public Class SearchPartyViewModel
     Dim searchTermRight As String
     Dim bLeftVisible As Boolean = False
     Dim bRightVisible As Boolean = False
+
     Dim partyCharsViewM, partyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
     Dim otherPartyCharsViewM, otherPartyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
 
@@ -26,6 +30,8 @@ Public Class SearchPartyViewModel
     Shared mInstance As SearchPartyViewModel
     Dim showRightSearchPanel = False
     Dim showLeftSearchPanel = False
+    Dim missionCtx As Mission
+    Dim gameCtx As Game
 
     Public Shared ReadOnly Property Instance As SearchPartyViewModel
         Get
@@ -33,68 +39,61 @@ Public Class SearchPartyViewModel
         End Get
     End Property
     Public Sub New(pvm As PartyVM,
-                   psl As PartyScreenLogic)
+                   psl As PartyScreenLogic,
+                   gctx As Game)
         partyScreenController = psl
         partyViewModel = pvm
+        missionCtx = Mission.Current
+        gameCtx = gctx
 
         partyCharsViewM = pvm.MainPartyTroops
         partyCharsPrisonerViewM = pvm.MainPartyPrisoners
-        otherPartyCharsViewM = pvm.OtherPartyPrisoners
+        otherPartyCharsViewM = pvm.OtherPartyTroops
         otherPartyCharsPrisonerViewM = pvm.OtherPartyPrisoners
 
-        UpdatePartyList(Nothing)
+        originalPartyList = pvm.MainPartyTroops.ToList()
+        originalPartyPrisonerList = pvm.MainPartyPrisoners.ToList()
 
-        AddHandler psl.Update, AddressOf UpdatePartyList
+        originalOtherPartyList = pvm.OtherPartyTroops.ToList()
+        originalOtherPartyPrisonerList = pvm.OtherPartyPrisoners.ToList()
+
         mInstance = Me
     End Sub
 
-    Public Sub UpdatePartyList(cmd As PartyScreenLogic.PartyCommand)
-        'Print("changes in party state")
-
-        originalPartyList = partyViewModel.MainPartyTroops.Where(Function(x) x.Number > 0).ToList()
-        originalPartyPrisonerList = partyViewModel.MainPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
-        originalOtherPartyList = partyViewModel.OtherPartyTroops.Where(Function(x) x.Number > 0).ToList()
-        originalOtherPartyPrisonerList = partyViewModel.OtherPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
+    Private Sub ResetPartyList(partyScreenLogic As PartyScreenLogic)
+        SearchLeft = ""
+        SearchRight = ""
     End Sub
 
-    Public Sub UpdateLabel(command As PartyScreenLogic.PartyCommand)
-
-    End Sub
 
 #Region "Left Side"
     Public Sub FindLeftPane()
         LeftVisible = Not LeftVisible
         'Print($"find left clicked state {LeftVisible}")
     End Sub
-    Public Sub ResetLeft()
+
+    Public Sub FilterLeft(keyword As String)
+        If keyword Is Nothing Then
+            Exit Sub
+        End If
+        Dim useCivilianOutfit = False
+        Dim reset = New PartyVM(gameCtx, partyScreenController, "Nothing")
+        originalOtherPartyList.Clear()
+        originalOtherPartyPrisonerList.Clear()
         otherPartyCharsViewM.Clear()
         otherPartyCharsPrisonerViewM.Clear()
+        If keyword IsNot "" Then
+            originalOtherPartyList = reset.OtherPartyTroops.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
+            originalOtherPartyPrisonerList = reset.OtherPartyPrisoners.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
+        Else
+            originalOtherPartyList = reset.OtherPartyTroops.ToList()
+            originalOtherPartyPrisonerList = reset.OtherPartyPrisoners.ToList()
+        End If
         For Each x In originalOtherPartyList
             otherPartyCharsViewM.Add(x)
         Next
         For Each x In originalOtherPartyPrisonerList
             otherPartyCharsPrisonerViewM.Add(x)
-        Next
-    End Sub
-    Public Sub FilterLeft(keyword As String)
-        If keyword Is "" Then
-            ResetLeft()
-            Exit Sub
-        End If
-        otherPartyCharsViewM.Clear()
-        otherPartyCharsPrisonerViewM.Clear()
-        'can't use list compreshension here :(
-        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
-        'good ol loop
-        For Each x In originalOtherPartyList
-            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
-                otherPartyCharsViewM.Add(x)
-            End If
-        Next
-        For Each x In originalOtherPartyPrisonerList
-            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
-                otherPartyCharsPrisonerViewM.Add(x)
-            End If
         Next
     End Sub
     <DataSourceProperty>
@@ -141,36 +140,29 @@ Public Class SearchPartyViewModel
         RightVisible = Not RightVisible
         'Print($"find right clicked state {RightVisible}")
     End Sub
-    Public Sub ResetRight()
+
+    Public Sub FilterRight(keyword As String)
+        If keyword Is Nothing Then
+            Exit Sub
+        End If
+        Dim useCivilianOutfit = False
+        Dim reset = New PartyVM(gameCtx, partyScreenController, "Nothing")
+        originalPartyList.Clear()
+        originalPartyPrisonerList.Clear()
         partyCharsViewM.Clear()
         partyCharsPrisonerViewM.Clear()
+        If keyword IsNot "" Then
+            originalPartyList = reset.MainPartyTroops.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
+            originalPartyPrisonerList = reset.MainPartyPrisoners.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
+        Else
+            originalPartyList = reset.MainPartyTroops.ToList()
+            originalPartyPrisonerList = reset.MainPartyPrisoners.ToList()
+        End If
         For Each x In originalPartyList
             partyCharsViewM.Add(x)
         Next
         For Each x In originalPartyPrisonerList
             partyCharsPrisonerViewM.Add(x)
-        Next
-    End Sub
-
-    Public Sub FilterRight(keyword As String)
-        If keyword Is "" Then
-            ResetRight()
-            Exit Sub
-        End If
-        partyCharsViewM.Clear()
-        partyCharsPrisonerViewM.Clear()
-        'can't use list compreshension here :(
-        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
-        'good ol loop
-        For Each x In originalPartyList
-            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
-                partyCharsViewM.Add(x)
-            End If
-        Next
-        For Each x In originalPartyPrisonerList
-            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
-                partyCharsPrisonerViewM.Add(x)
-            End If
         Next
     End Sub
 

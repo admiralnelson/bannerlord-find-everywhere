@@ -9,22 +9,27 @@ Imports TaleWorlds.Core.ViewModelCollection
 Imports TaleWorlds.MountAndBlade
 Imports TaleWorlds.Core
 Imports System
+Imports HarmonyLib
+Imports TaleWorlds.CampaignSystem.PartyScreenLogic
+Imports Microsoft.VisualBasic
 
 Public Class SearchPartyViewModel
     Inherits ViewModel
+
+    Shared isModified = False
 
     Dim searchTermLeft As String
     Dim searchTermRight As String
     Dim bLeftVisible As Boolean = False
     Dim bRightVisible As Boolean = False
 
-    Dim partyCharsViewM, partyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
-    Dim otherPartyCharsViewM, otherPartyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
+    Friend Shared partyCharsViewM, partyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
+    Friend Shared otherPartyCharsViewM, otherPartyCharsPrisonerViewM As MBBindingList(Of PartyCharacterVM)
 
     Dim originalPartyList, originalPartyPrisonerList As List(Of PartyCharacterVM)
     Dim originalOtherPartyList, originalOtherPartyPrisonerList As List(Of PartyCharacterVM)
 
-    Dim partyScreenController As PartyScreenLogic
+    Friend Shared partyScreenController As PartyScreenLogic
     Dim partyViewModel As PartyVM
 
     Shared mInstance As SearchPartyViewModel
@@ -41,6 +46,7 @@ Public Class SearchPartyViewModel
     Public Sub New(pvm As PartyVM,
                    psl As PartyScreenLogic,
                    gctx As Game)
+        isModified = False
         partyScreenController = psl
         partyViewModel = pvm
         missionCtx = Mission.Current
@@ -58,43 +64,79 @@ Public Class SearchPartyViewModel
         originalOtherPartyPrisonerList = pvm.OtherPartyPrisoners.ToList()
 
         mInstance = Me
+        AddHandler psl.Update, AddressOf UpdatePartyList
+        AddHandler psl.AfterReset, AddressOf ResetPartyList
+    End Sub
+
+    Private Sub UpdatePartyList(command As PartyCommand)
+        Print("changes detected")
+        originalPartyList.AddRange(partyCharsViewM)
+        originalPartyList = originalPartyList.Distinct().ToList()
+
+        originalPartyPrisonerList.AddRange(partyCharsPrisonerViewM)
+        originalPartyPrisonerList = originalPartyPrisonerList.Distinct().ToList()
+
+        originalOtherPartyList.AddRange(otherPartyCharsViewM)
+        originalOtherPartyList = originalOtherPartyList.Distinct().ToList()
+
+        originalOtherPartyPrisonerList.AddRange(otherPartyCharsPrisonerViewM)
+        originalOtherPartyPrisonerList = originalOtherPartyPrisonerList.Distinct().ToList()
+
+        'originalPartyList = partyViewModel.MainPartyTroops.Where(Function(x) x.Number > 0).ToList()
+        'originalPartyPrisonerList = partyViewModel.MainPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
+        'originalOtherPartyList = partyViewModel.OtherPartyTroops.Where(Function(x) x.Number > 0).ToList()
+        'originalOtherPartyPrisonerList = partyViewModel.OtherPartyPrisoners.Where(Function(x) x.Number > 0).ToList()
     End Sub
 
     Private Sub ResetPartyList(partyScreenLogic As PartyScreenLogic)
         SearchLeft = ""
         SearchRight = ""
+        isModified = False
     End Sub
 
 
 #Region "Left Side"
     Public Sub FindLeftPane()
         LeftVisible = Not LeftVisible
+        If Not LeftVisible Then SearchLeft = ""
+        If (SearchLeft = "" Or SearchLeft Is Nothing) And
+           (SearchRight = "" Or SearchRight Is Nothing) Then
+            isModified = False
+        End If
         'Print($"find left clicked state {LeftVisible}")
     End Sub
-
-    Public Sub FilterLeft(keyword As String)
-        If keyword Is Nothing Then
-            Exit Sub
-        End If
-        Dim useCivilianOutfit = False
-        Dim reset = New PartyVM(gameCtx, partyScreenController, "Nothing")
-        originalOtherPartyList.Clear()
-        originalOtherPartyPrisonerList.Clear()
+    Public Sub ResetLeft()
         otherPartyCharsViewM.Clear()
         otherPartyCharsPrisonerViewM.Clear()
-        If keyword IsNot "" Then
-            originalOtherPartyList = reset.OtherPartyTroops.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
-            originalOtherPartyPrisonerList = reset.OtherPartyPrisoners.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
-        Else
-            originalOtherPartyList = reset.OtherPartyTroops.ToList()
-            originalOtherPartyPrisonerList = reset.OtherPartyPrisoners.ToList()
-        End If
         For Each x In originalOtherPartyList
             otherPartyCharsViewM.Add(x)
         Next
         For Each x In originalOtherPartyPrisonerList
             otherPartyCharsPrisonerViewM.Add(x)
         Next
+        isModified = Not ((SearchLeft = "" Or SearchLeft Is Nothing) And (SearchRight = "" Or SearchRight Is Nothing))
+    End Sub
+    Public Sub FilterLeft(keyword As String)
+        If keyword Is "" Then
+            ResetLeft()
+            Exit Sub
+        End If
+        otherPartyCharsViewM.Clear()
+        otherPartyCharsPrisonerViewM.Clear()
+        'can't use list compreshension here :(
+        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
+        'good ol loop
+        For Each x In originalOtherPartyList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                otherPartyCharsViewM.Add(x)
+            End If
+        Next
+        For Each x In originalOtherPartyPrisonerList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                otherPartyCharsPrisonerViewM.Add(x)
+            End If
+        Next
+        isModified = True
     End Sub
     <DataSourceProperty>
     Public Property LeftVisible As Boolean
@@ -138,32 +180,46 @@ Public Class SearchPartyViewModel
 
     Public Sub FindRightPane()
         RightVisible = Not RightVisible
+        If Not RightVisible Then SearchRight = ""
+        If (SearchLeft = "" Or SearchLeft Is Nothing) And
+           (SearchRight = "" Or SearchRight Is Nothing) Then
+            isModified = False
+        End If
         'Print($"find right clicked state {RightVisible}")
     End Sub
-
-    Public Sub FilterRight(keyword As String)
-        If keyword Is Nothing Then
-            Exit Sub
-        End If
-        Dim useCivilianOutfit = False
-        Dim reset = New PartyVM(gameCtx, partyScreenController, "Nothing")
-        originalPartyList.Clear()
-        originalPartyPrisonerList.Clear()
+    Public Sub ResetRight()
         partyCharsViewM.Clear()
         partyCharsPrisonerViewM.Clear()
-        If keyword IsNot "" Then
-            originalPartyList = reset.MainPartyTroops.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
-            originalPartyPrisonerList = reset.MainPartyPrisoners.Where(Function(x) x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower())).ToList()
-        Else
-            originalPartyList = reset.MainPartyTroops.ToList()
-            originalPartyPrisonerList = reset.MainPartyPrisoners.ToList()
-        End If
         For Each x In originalPartyList
             partyCharsViewM.Add(x)
         Next
         For Each x In originalPartyPrisonerList
             partyCharsPrisonerViewM.Add(x)
         Next
+        isModified = Not ((SearchLeft = "" Or SearchLeft Is Nothing) And (SearchRight = "" Or SearchRight Is Nothing))
+    End Sub
+
+    Public Sub FilterRight(keyword As String)
+        If keyword Is "" Then
+            ResetRight()
+            Exit Sub
+        End If
+        partyCharsViewM.Clear()
+        partyCharsPrisonerViewM.Clear()
+        'can't use list compreshension here :(
+        'partyCharsViewM = originalPartyList.Where(Function(x) x.Troop.Character.Name.Contains(keyword))
+        'good ol loop
+        For Each x In originalPartyList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                partyCharsViewM.Add(x)
+            End If
+        Next
+        For Each x In originalPartyPrisonerList
+            If x.Troop.Character.ToString().ToLower().Contains(keyword.ToLower()) And x.Troop.Number > 0 Then
+                partyCharsPrisonerViewM.Add(x)
+            End If
+        Next
+        isModified = True
     End Sub
 
     <DataSourceProperty>
@@ -218,5 +274,24 @@ Public Class SearchPartyViewModel
         End Set
     End Property
 
+
+    '<HarmonyPatch(GetType(PartyVM))>
+    'Public Class PatchButtonMoveAllParty
+    '    Shared currentChar As PartyCharacterVM
+    '
+    '    <HarmonyPatch("ExecuteTransferAllMainTroops")>
+    '    <HarmonyPatch("ExecuteTransferAllOtherTroops")>
+    '    <HarmonyPatch("ExecuteTransferAllMainPrisoners")>
+    '    <HarmonyPatch("ExecuteTransferAllOtherPrisoners")>
+    '    Public Shared Function Prefix(ByRef __instance As PartyVM) As Boolean
+    '        If isModified Then
+    '            MessageBoxBL("Warning", "You can't transfer all troops with filters on!" & vbLf &
+    '                                      "Clear right & left search term and try again " & vbLf &
+    '                                      "(we're working for proper fix, see: https://tinyurl.com/y8s54s6h)")
+    '            Return False
+    '        End If
+    '        Return True
+    '    End Function
+    'End Class
 
 End Class

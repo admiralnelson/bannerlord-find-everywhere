@@ -89,8 +89,7 @@ Public Class SearchBarterViewModel
         'originalTraderOtherList = itemViewModel.LeftOtherList.Where(Function(x) x.TotalItemCount > 0).ToList()   
 
         mInstance = Me
-        bm.OnTransfer = AddressOf UpdateItem
-        UpdateItem(Nothing, Nothing)
+        'UpdateItem(Nothing, Nothing)
         ready = True
     End Sub
 

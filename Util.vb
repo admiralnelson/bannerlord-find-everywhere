@@ -1,6 +1,8 @@
 ﻿Imports System
 Imports TaleWorlds.Core
-
+Imports System.Collections.Generic
+Imports System.Reflection
+Imports System.Runtime.CompilerServices
 Module Util
     Public Sub Print(s As String)
         InformationManager.DisplayMessage(New InformationMessage(s))
@@ -21,3 +23,4 @@ Module Util
         InformationManager.ShowInquiry(New InquiryData(title, msg, True, isYesNo, "Accept", "Cancel", callbackOK, callbackAbrt))
     End Sub
 End Module
+

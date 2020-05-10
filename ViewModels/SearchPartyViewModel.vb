@@ -69,7 +69,7 @@ Public Class SearchPartyViewModel
     End Sub
 
     Private Sub UpdatePartyList(command As PartyCommand)
-        Print("changes detected")
+        'Print("changes detected")
         originalPartyList.AddRange(partyCharsViewM)
         originalPartyList = originalPartyList.Distinct().ToList()
 
